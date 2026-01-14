@@ -16,10 +16,6 @@ param containerRegistryName string
 @description('AI Foundry endpoint')
 param aiFoundryEndpoint string
 
-@description('AI Foundry key')
-@secure()
-param aiFoundryKey string
-
 @description('The SKU of the App Service Plan')
 param sku string = 'P1v3'
 
@@ -41,7 +37,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
 resource appService 'Microsoft.Web/sites@2022-09-01' = {
   name: name
   location: location
-  tags: tags
+  tags: union(tags, {
+    'azd-service-name': 'web'
+  })
   kind: 'app,linux,container'
   identity: {
     type: 'SystemAssigned'
@@ -79,10 +77,6 @@ resource appService 'Microsoft.Web/sites@2022-09-01' = {
         {
           name: 'AI_FOUNDRY_ENDPOINT'
           value: aiFoundryEndpoint
-        }
-        {
-          name: 'AI_FOUNDRY_KEY'
-          value: aiFoundryKey
         }
       ]
     }
