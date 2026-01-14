@@ -25,5 +25,6 @@ COPY --from=publish /app/publish .
 
 # Set environment to Production (can be overridden)
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80
 
 ENTRYPOINT ["dotnet", "ZavaStorefront.dll"]
