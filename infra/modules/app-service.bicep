@@ -75,6 +75,10 @@ resource appService 'Microsoft.Web/sites@2022-09-01' = {
           value: 'false'
         }
         {
+          name: 'WEBSITES_PORT'
+          value: '8080'
+        }
+        {
           name: 'AI_FOUNDRY_ENDPOINT'
           value: aiFoundryEndpoint
         }
