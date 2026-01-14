@@ -21,7 +21,7 @@ param aiFoundryEndpoint string
 param aiFoundryKey string
 
 @description('The SKU of the App Service Plan')
-param sku string = 'B1'
+param sku string = 'P1v3'
 
 // App Service Plan (Linux)
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
