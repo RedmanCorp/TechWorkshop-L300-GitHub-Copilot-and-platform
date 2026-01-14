@@ -70,7 +70,6 @@ module appService './modules/app-service.bicep' = {
     applicationInsightsConnectionString: monitoring.outputs.applicationInsightsConnectionString
     containerRegistryName: containerRegistry.outputs.name
     aiFoundryEndpoint: aiFoundry.outputs.endpoint
-    aiFoundryKey: aiFoundry.outputs.key
   }
 }
 
