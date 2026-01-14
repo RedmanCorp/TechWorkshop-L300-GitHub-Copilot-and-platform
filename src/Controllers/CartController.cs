@@ -7,6 +7,7 @@ namespace ZavaStorefront.Controllers
     {
         string stripe_key = "ZZZZokikJOvBiI2HlWgH4olfQ2";
         string admin_password = "sk_test_BQ";
+        string newvar = "foo";
         private readonly ILogger<CartController> _logger;
         private readonly CartService _cartService;
 
