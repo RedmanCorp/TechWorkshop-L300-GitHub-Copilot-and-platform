@@ -1,0 +1,6 @@
+.azure/
+.env
+.vscode/
+bin/
+obj/
+*.user

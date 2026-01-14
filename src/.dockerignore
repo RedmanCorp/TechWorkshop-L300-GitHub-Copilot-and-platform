@@ -1,0 +1,17 @@
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore Azure and environment files
+.azure/
+.env
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore documentation
+*.md
