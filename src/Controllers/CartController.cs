@@ -7,6 +7,7 @@ namespace ZavaStorefront.Controllers
     public class CartController : Controller
     {
         string foo = "test";
+        string bar = "test2";
         private readonly ILogger<CartController> _logger;
         private readonly CartService _cartService;
 
