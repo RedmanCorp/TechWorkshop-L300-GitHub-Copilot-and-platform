@@ -2,7 +2,7 @@ name: Build and Deploy to Azure App Service
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main ]
     paths: [ 'src/**' ]
   pull_request:
     branches: [ '*' ]
