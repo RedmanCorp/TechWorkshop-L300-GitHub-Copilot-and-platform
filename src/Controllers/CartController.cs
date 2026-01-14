@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.WebEncoders.Testing;
 using ZavaStorefront.Services;
 
 namespace ZavaStorefront.Controllers
 {
     public class CartController : Controller
     {
+        string foo = "test";
         private readonly ILogger<CartController> _logger;
         private readonly CartService _cartService;
 
