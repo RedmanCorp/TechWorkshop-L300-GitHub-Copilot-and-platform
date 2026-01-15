@@ -95,6 +95,18 @@ module userContainerRegistryAccess './modules/container-registry-access.bicep' =
   }
 }
 
+// AI Services Observability Workbook
+module observabilityWorkbook './modules/workbook.bicep' = {
+  name: 'observability-workbook'
+  scope: rg
+  params: {
+    workbookName: 'ai-services-observability-${environmentName}'
+    location: location
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    tags: tags
+  }
+}
+
 // Outputs
 output AZURE_LOCATION string = location
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
