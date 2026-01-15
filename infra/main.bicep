@@ -56,6 +56,7 @@ module aiFoundry './modules/ai-foundry.bicep' = {
     name: 'ai-${environmentName}'
     location: location
     tags: tags
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
 
