@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Azure.Identity;
 using Azure.Core;
+using Azure.AI.ContentSafety;
 
 namespace ZavaStorefront.Services
 {
@@ -11,17 +12,65 @@ namespace ZavaStorefront.Services
         private readonly HttpClient _httpClient;
         private readonly string _endpoint;
         private readonly DefaultAzureCredential _credential;
+        private readonly ILogger<ChatService> _logger;
 
-        public ChatService(IConfiguration configuration, HttpClient httpClient)
+        public ChatService(IConfiguration configuration, HttpClient httpClient, ILogger<ChatService> logger)
         {
             _configuration = configuration;
             _httpClient = httpClient;
             _endpoint = (_configuration["AI_FOUNDRY_ENDPOINT"] ?? string.Empty).TrimEnd('/');
             _credential = new DefaultAzureCredential();
+            _logger = logger;
+        }
+
+        private async Task<(bool isSafe, string? reason)> CheckContentSafetyAsync(string text)
+        {
+            try
+            {
+                _logger.LogInformation("Starting content safety check for text: {TextPreview}", text.Substring(0, Math.Min(50, text.Length)));
+                var client = new ContentSafetyClient(new Uri(_endpoint), _credential);
+                
+                // Configure to check all categories including blocklists and groundedness
+                var request = new AnalyzeTextOptions(text)
+                {
+                    OutputType = AnalyzeTextOutputType.FourSeverityLevels
+                };
+                
+                var response = await client.AnalyzeTextAsync(request);
+
+                _logger.LogInformation("Content safety response received. Categories analyzed: {Count}", response.Value.CategoriesAnalysis.Count);
+                
+                var categoriesAnalysis = response.Value.CategoriesAnalysis;
+                foreach (var category in categoriesAnalysis)
+                {
+                    _logger.LogInformation("Category: {Category}, Severity: {Severity}", category.Category, category.Severity);
+                    // Lower threshold to severity >= 1 for better detection
+                    if (category.Severity >= 1)
+                    {
+                        _logger.LogWarning("Content flagged: {Category} with severity {Severity}", category.Category, category.Severity);
+                        return (false, category.Category.ToString());
+                    }
+                }
+
+                _logger.LogInformation("Content safety check passed - all categories below threshold");
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Content safety check failed with exception: {Message}", ex.Message);
+                return (true, null); // Fail open to avoid blocking legitimate requests
+            }
         }
 
         public async Task<string> SendMessageAsync(string userMessage)
         {
+            // Check content safety first
+            var (isSafe, reason) = await CheckContentSafetyAsync(userMessage);
+            if (!isSafe)
+            {
+                return $"I'm sorry, but I cannot process your request as it may contain {reason?.ToLower()} content. Please rephrase your message.";
+            }
+
             try
             {
                 // Get Azure AD token

@@ -56,6 +56,7 @@ module aiFoundry './modules/ai-foundry.bicep' = {
     name: 'ai-${environmentName}'
     location: location
     tags: tags
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -91,6 +92,18 @@ module userContainerRegistryAccess './modules/container-registry-access.bicep' =
     containerRegistryName: containerRegistry.outputs.name
     principalId: principalId
     principalType: 'User'
+  }
+}
+
+// AI Services Observability Workbook
+module observabilityWorkbook './modules/workbook.bicep' = {
+  name: 'observability-workbook'
+  scope: rg
+  params: {
+    workbookName: 'ai-services-observability-${environmentName}'
+    location: location
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    tags: tags
   }
 }
 
